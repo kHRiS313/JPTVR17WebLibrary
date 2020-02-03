@@ -22,6 +22,8 @@ import javax.servlet.http.HttpSession;
 import session.BookFacade;
 import session.HistoryFacade;
 import session.ReaderFacade;
+import session.UserFacade;
+import util.EncriptPass;
 import util.RoleManager;
 
 /**
@@ -33,12 +35,15 @@ import util.RoleManager;
     "/showBook",
     "/takeBook",
     "/doTakeBook",
+    "/editReader",
+    "/changeReader",
     
 })
 public class UserController extends HttpServlet {
 @EJB BookFacade bookFacade;
 @EJB ReaderFacade readerFacade;
 @EJB HistoryFacade historyFacade;
+@EJB private UserFacade userFacade;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -96,6 +101,9 @@ public class UserController extends HttpServlet {
                         if(user.getReader().getMoney() > user.getReader().getMoney()-book.getPrice()){
                             book.setCountInLibrary(book.getCountInLibrary()-1);
                             bookFacade.edit(book);
+                            reader = user.getReader();
+                            reader.setMoney(reader.getMoney() - book.getPrice());
+                            readerFacade.edit(reader);
                             History history = new History();
                             history.setBook(book);
                             history.setReader(user.getReader());
@@ -114,6 +122,97 @@ public class UserController extends HttpServlet {
                 request.getRequestDispatcher("/listBooks")
                         .forward(request, response);
                 break;
+            case "/editReader":
+                User changeUser=null;
+                String id = request.getParameter("id");
+                if(id == null){
+                   changeUser = (User) session.getAttribute("user");
+                   reader = changeUser.getReader();
+                
+                    if (changeUser == null){
+                        request.setAttribute("info", "Войдите, для доступа к функции");
+                        request.getRequestDispatcher("/showLogin.jsp")
+                            .forward(request, response);
+                    }
+                }else{
+                    reader = readerFacade.find(Long.parseLong(id));
+                    changeUser = userFacade.findByReader(reader); 
+                }
+                
+                if("admin".equals(changeUser.getLogin())){
+                    if(!"admin".equals(user.getLogin())){
+                        request.setAttribute("info", "У вас нет прав, войдите в систему как администратор");
+                        request.getRequestDispatcher("/index.jsp").forward(request, response);
+                        break;
+                    }
+                }
+                request.setAttribute("reader", reader);
+                request.setAttribute("changeUser", changeUser);
+                request.getRequestDispatcher("/editReader.jsp")
+                        .forward(request, response);
+                break;
+            case "/changeReader":
+                id = request.getParameter("id");
+                String name = request.getParameter("name");
+                String surname = request.getParameter("surname");
+                String phone = request.getParameter("phone");
+                String money = request.getParameter("money");
+                String login = request.getParameter("login");
+                String password1 = request.getParameter("password1");
+                String password2 = request.getParameter("password2");
+                if("".equals(name) || name==null
+                        || "".equals(name) || name==null
+                        || "".equals(surname) || surname==null 
+                        || "".equals(phone) || phone==null 
+                        || "".equals(money) || money==null 
+                        || "".equals(login) || login==null 
+                        || "".equals(password1) || password1==null
+                        || "".equals(password2) || password2==null
+                        || !password1.equals(password2)
+                        ){
+                    request.setAttribute("info", "Не совпадают пароли или незаполнены все поля");
+                    request.setAttribute("name", name);
+                    request.setAttribute("surname", surname);
+                    request.setAttribute("phone", phone);
+                    request.setAttribute("money", money);
+                    request.setAttribute("login", login);
+                    request.setAttribute("id", id);
+                    request.getRequestDispatcher("/editReader")
+                        .forward(request, response);
+                    break;
+                }
+               
+                changeUser = userFacade.findByLogin(login);
+                if(changeUser == null){
+                    request.setAttribute("info", "Нет такого пользователя");
+                    request.setAttribute("id", id);
+                    request.getRequestDispatcher("/editReader")
+                        .forward(request, response);
+                    break;
+                }
+                changeUser.setLogin(login);
+                EncriptPass ep = new EncriptPass();
+                String encriptPassword = ep.setEncriptPass(password1, changeUser.getSalts());
+                changeUser.setPassword(encriptPassword);
+                try {
+                    userFacade.edit(changeUser);
+                    reader = changeUser.getReader();
+                    reader.setName(name);
+                    reader.setSurname(surname);
+                    reader.setPhone(phone);
+                    reader.setMoney(Integer.parseInt(money));
+                    //Запись данных в базу
+                    readerFacade.edit(reader);
+                    request.setAttribute("reader", reader);
+                    request.setAttribute("info", "Данные "+changeUser.getLogin()+" изменены");
+                    request.getRequestDispatcher("/editReader").forward(request, response);
+                } catch (Exception e) {
+                   request.setAttribute("info", "Данные не изменены");
+                    request.setAttribute("id", id);
+                    request.getRequestDispatcher("/editReader")
+                        .forward(request, response);
+                }
+                break;    
         }
     }
 

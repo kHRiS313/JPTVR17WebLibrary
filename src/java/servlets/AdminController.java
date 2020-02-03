@@ -26,7 +26,6 @@ import session.HistoryFacade;
 import session.ReaderFacade;
 import session.RolesFacade;
 import session.UserFacade;
-import util.EncriptPass;
 import util.RoleManager;
 
 /**
@@ -36,8 +35,7 @@ import util.RoleManager;
 @WebServlet(name = "AdminController", urlPatterns = {
     "/newBook",
     "/addBook",
-    "/editReader",
-    "/changeReader",
+    
     "/editBook",
     "/changeBook",
     "/listReaders",
@@ -153,66 +151,7 @@ public class AdminController extends HttpServlet {
                 request.setAttribute("listReaders", listReaders);
                 request.getRequestDispatcher("/listReaders.jsp").forward(request, response);
                 break;
-            case "/editReader":
-                id = request.getParameter("id");
-                Reader reader = readerFacade.find(Long.parseLong(id));
-                User changeUser = userFacade.findByReader(reader);
-                if("admin".equals(changeUser.getLogin())){
-                    if(!"admin".equals(user.getLogin())){
-                        request.setAttribute("info", "У вас нет прав, войдите в систему как администратор");
-                        request.getRequestDispatcher("/index.jsp").forward(request, response);
-                        break;
-                    }
-                }
-                request.setAttribute("reader", reader);
-                request.setAttribute("changeUser", changeUser);
-                request.getRequestDispatcher("/editReader.jsp")
-                        .forward(request, response);
-                break;
-            case "/changeReader":
-                id = request.getParameter("id");
-                name = request.getParameter("name");
-                String surname = request.getParameter("surname");
-                String phone = request.getParameter("phone");
-                String login = request.getParameter("login");
-                String password1 = request.getParameter("password1");
-                String password2 = request.getParameter("password2");
-                if(!password1.equals(password2)){
-                    request.setAttribute("info", "Не совпадают пароли");
-                    request.setAttribute("id", id);
-                    request.getRequestDispatcher("/editReader")
-                        .forward(request, response);
-                    break;
-                }
-                changeUser = userFacade.findByLogin(login);
-                if(changeUser == null){
-                    request.setAttribute("info", "Нет такого пользователя");
-                    request.setAttribute("id", id);
-                    request.getRequestDispatcher("/editReader")
-                        .forward(request, response);
-                    break;
-                }
-                changeUser.setLogin(login);
-                EncriptPass ep = new EncriptPass();
-                String encriptPassword = ep.setEncriptPass(password1, changeUser.getSalts());
-                changeUser.setPassword(encriptPassword);
-                try {
-                    userFacade.edit(changeUser);
-                    reader = readerFacade.find(Long.parseLong(id));
-                    reader.setName(name);
-                    reader.setSurname(surname);
-                    reader.setPhone(phone);
-                    //Запись данных в базу
-                    readerFacade.edit(reader);
-                    request.setAttribute("reader", reader);
-                    request.getRequestDispatcher("/listReaders").forward(request, response);
-                } catch (Exception e) {
-                   request.setAttribute("info", "Данные не изменены");
-                    request.setAttribute("id", id);
-                    request.getRequestDispatcher("/editReader")
-                        .forward(request, response);
-                }
-                break;
+            
             case "/takeOnBooks":
                 List<History> listHistories = historyFacade.findNotReturnedBook();
                 request.setAttribute("takeOnBooks", listHistories);

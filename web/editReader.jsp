@@ -21,6 +21,7 @@
             Имя: <input type="text" name="name" value="${reader.name}"><br>
             Фамилия: <input type="text" name="surname" value="${reader.surname}"><br>
             Телефон: <input type="text" name="phone" value="${reader.phone}"><br>
+            Деньги: <input type="text" name="money" value="${reader.money}"><br>
             Логин: <input type="text" name="login" value="${changeUser.login}"><br>
             Пароль: <input type="password" name="password1" value=""><br>
             Повторите пароль: <input type="password" name="password2" value=""><br>

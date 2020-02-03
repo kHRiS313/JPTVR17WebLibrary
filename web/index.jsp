@@ -23,10 +23,12 @@
         </c:if>
         <c:if test="${userRole ne null}">
             <a href="logout">Выйти</a><br>
+            <a href="editReader">Редактировать профиль</a><br>
         </c:if>
         <a href="newReader">Регистрация</a><br>
         <br>
         <a href="listBooks">Список книг</a><br>
+        
         
         <c:if test="${userRole eq 'MANAGER' || userRole eq 'ADMIN'}">
             <br>
