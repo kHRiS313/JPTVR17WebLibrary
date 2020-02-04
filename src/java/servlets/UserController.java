@@ -98,15 +98,19 @@ public class UserController extends HttpServlet {
                 try {
                     book = bookFacade.find(Long.parseLong(bookId));
                     if(book.getCountInLibrary()>0){
-                        if(user.getReader().getMoney() > user.getReader().getMoney()-book.getPrice()){
+                        reader = readerFacade.find(user.getReader().getId());
+                        int moneyReader = reader.getMoney();
+                        int priceBook = book.getPrice();
+                        int moneyFromReaderAfterPurcase = moneyReader - priceBook;
+                        if(moneyFromReaderAfterPurcase >= 0){
                             book.setCountInLibrary(book.getCountInLibrary()-1);
                             bookFacade.edit(book);
                             reader = user.getReader();
-                            reader.setMoney(reader.getMoney() - book.getPrice());
+                            reader.setMoney(moneyFromReaderAfterPurcase);
                             readerFacade.edit(reader);
                             History history = new History();
                             history.setBook(book);
-                            history.setReader(user.getReader());
+                            history.setReader(reader);
                             history.setTakeBook(new Date());
                             historyFacade.create(history);
                             request.setAttribute("info", "Книга куплена");
