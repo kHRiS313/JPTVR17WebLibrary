@@ -45,6 +45,17 @@ public class BookFacade extends AbstractFacade<Book> {
         
     }
 
+    public List<Book> getListNewBooks() {
+        //ожидается рефакторинг 
+        //энтити Book с целью добавления даты создания книги
+        try {
+            return em.createQuery("SELECT b FROM Book b")
+                    .getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
    
     
 }

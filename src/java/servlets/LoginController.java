@@ -11,15 +11,21 @@ import entity.Roles;
 import entity.User;
 import entity.UserRoles;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import jsonbuilders.BookJsonBuilder;
 import session.BookFacade;
 import session.ReaderFacade;
 import session.RolesFacade;
@@ -39,6 +45,7 @@ import util.RoleManager;
     "/newReader",
     "/addReader",
     "/listBooks",
+    "/listNewBooks",
     
 
 })
@@ -207,6 +214,22 @@ public class LoginController extends HttpServlet {
                 List<Book> listBooks = bookFacade.findIsActiveBooks();
                 request.setAttribute("listBooks", listBooks);
                 request.getRequestDispatcher("/listBooks.jsp").forward(request, response);
+                break;
+            case "/listNewBooks":
+                List<Book> listNewBooks = bookFacade.getListNewBooks();
+                BookJsonBuilder bookJsonBuilder = new BookJsonBuilder();
+                JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+                for(Book book : listNewBooks){
+                    arrayBuilder.add(bookJsonBuilder.createJsonBook(book));
+                }
+                String json = "";
+                try (Writer writer = new StringWriter()){
+                    Json.createWriter(writer).write(arrayBuilder.build());
+                    json = writer.toString();
+                }
+                try (PrintWriter out = response.getWriter()) {
+                  out.println(json);        
+                }
                 break;
         }
 
