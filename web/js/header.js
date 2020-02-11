@@ -12,7 +12,6 @@ document.getElementById("menu1").onclick = function(){
             console.log('Request failed', error);  
           });
 
-  
 };
 document.getElementById("menu2").onclick = function(){
   toogleMenuActive("menu2");

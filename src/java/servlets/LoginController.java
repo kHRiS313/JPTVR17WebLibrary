@@ -231,6 +231,8 @@ public class LoginController extends HttpServlet {
                   out.println(json);        
                 }
                 break;
+            case "/listReaderJson":
+                List<Book> listReaderJson = bookFacade.getListReaderJson();
         }
 
     }
