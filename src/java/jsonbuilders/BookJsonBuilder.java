@@ -18,12 +18,13 @@ public class BookJsonBuilder {
     public JsonObject createJsonBook(Book book){
         JsonObjectBuilder job = Json.createObjectBuilder();
         job.add("id", book.getId())
-                .add("name", book.getName())
-                .add("author", book.getAuthor())
-                .add("isbn", book.getIsbn())
-                .add("price", book.getPrice())
-                .add("countInLibrary", book.getCountInLibrary())
-                .add("active", book.isActive());
+          .add("name", book.getName())
+          .add("author", book.getAuthor())
+          .add("isbn", book.getIsbn())
+          .add("price", book.getPrice())
+          .add("publishedYear", book.getPublishedYear())
+          .add("countInLibrary", book.getCountInLibrary())
+          .add("active", book.isActive());
         return job.build();
     }
 }

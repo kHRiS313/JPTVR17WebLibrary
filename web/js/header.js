@@ -1,10 +1,17 @@
 
 document.getElementById("menu1").onclick = function(){
   toogleMenuActive("menu1");
-  http('listNewBooks').then(function(data) {  
-        printListNewBooks(data);
-        console.log('Request succeeded with JSON response', data);  
-      })
+  fetch('listNewBooks')
+          .then(status)
+          .then(json)
+          .then(function(data) {  
+            printListNewBooks(data);
+            console.log('Request succeeded with JSON response', data);  
+          })
+          .catch(function(error) {  
+            console.log('Request failed', error);  
+          });
+
   
 };
 document.getElementById("menu2").onclick = function(){
@@ -30,15 +37,7 @@ function toogleMenuActive(elementId){
   }
 }
 
-function http(url){
-  return promise = fetch(url)
-          .then(status)
-          .then(json)
-          .catch(function(error) {  
-            console.log('Request failed', error);  
-          });
-          
-}
+
 function status(response) {  
   if (response.status >= 200 && response.status < 300) {  
     return Promise.resolve(response)  
