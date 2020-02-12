@@ -44,8 +44,6 @@ import util.RoleManager;
     "/logout",
     "/newReader",
     "/addReader",
-    "/listBooks",
-    "/listNewBooks",
     
 
 })
@@ -210,27 +208,7 @@ public class LoginController extends HttpServlet {
                 }
                 request.getRequestDispatcher("/newReader.jsp").forward(request, response);
                 break;
-            case "/listBooks":
-                List<Book> listBooks = bookFacade.findIsActiveBooks();
-                request.setAttribute("listBooks", listBooks);
-                request.getRequestDispatcher("/listBooks.jsp").forward(request, response);
-                break;
-            case "/listNewBooks":
-                List<Book> listNewBooks = bookFacade.getListNewBooks();
-                BookJsonBuilder bookJsonBuilder = new BookJsonBuilder();
-                JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-                for(Book book : listNewBooks){
-                    arrayBuilder.add(bookJsonBuilder.createJsonBook(book));
-                }
-                String json = "";
-                try (Writer writer = new StringWriter()){
-                    Json.createWriter(writer).write(arrayBuilder.build());
-                    json = writer.toString();
-                }
-                try (PrintWriter out = response.getWriter()) {
-                  out.println(json);        
-                }
-                break;
+         
             case "/listReaderJson":
                 List<Book> listReaderJson = bookFacade.getListReaderJson();
         }

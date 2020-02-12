@@ -11,8 +11,18 @@
     <jsp-config>
         <jsp-property-group>
             <display-name>template1</display-name>
+            <url-pattern>/newBook.jsp</url-pattern>
             <url-pattern>/index.jsp</url-pattern>
             <url-pattern>/showLogin.jsp</url-pattern>
+            <url-pattern>/takeBook.jsp</url-pattern>
+            <url-pattern>/returnBook.jsp</url-pattern>
+            <url-pattern>/editReader.jsp</url-pattern>
+            <url-pattern>/editBook.jsp</url-pattern>
+            <url-pattern>/newReader.jsp</url-pattern>
+            <url-pattern>/takeOnBooks.jsp</url-pattern>
+            <url-pattern>/listBooks.jsp</url-pattern>
+            <url-pattern>/listReaders.jsp</url-pattern>
+            <url-pattern>/showBook.jsp</url-pattern>
             <include-prelude>/WEB-INF/jspf/header.jspf</include-prelude>
             <include-coda>/WEB-INF/jspf/footer.jspf</include-coda>
         </jsp-property-group>

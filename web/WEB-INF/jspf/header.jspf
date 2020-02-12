@@ -11,7 +11,7 @@
       <div class="container">
           <div class="row">
             <nav class="navbar navbar-expand-lg navbar-dark bg-primary col-12">
-              <a class="navbar-brand" href="#">Navbar</a>
+              <a class="navbar-brand" href="index">Home</a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
@@ -19,10 +19,10 @@
               <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav mr-auto">
                   <li class="nav-item " id="menu1">
-                    <a class="nav-link" href="#">Новые книги</a>
+                    <a class="nav-link" href="listBooks">list books</a>
                   </li>
-                  <li class="nav-item active " id="menu2">
-                    <a class="nav-link" href="#">Features</a>
+                  <li class="nav-item " id="menu2">
+                    <a class="nav-link" href="listReaders">list Reader</a>
                   </li>
                   <li class="nav-item"  id="menu3">
                     <a class="nav-link" href="#">Pricing</a>
